@@ -1,12 +1,19 @@
-﻿namespace DtoParcer
+﻿using System;
+
+namespace DtoParcer
 {
     internal class Generator
     {
-        private string _pathToJson;
+        private RouterGeneration _routerGeneration;
 
-        public Generator(string pathToJson)
+        public Generator(string pathToJson, string pathToGeneratedClasses)
         {
-            _pathToJson = pathToJson;
+            _routerGeneration = new RouterGeneration(pathToJson, pathToGeneratedClasses);
+        }
+
+        public void GenerateClasses()
+        {
+            throw new NotImplementedException();
         }
     }
 }
