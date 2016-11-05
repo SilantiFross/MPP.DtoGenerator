@@ -2,11 +2,11 @@
 {
     internal class Generator
     {
-        private string _pathToJsonFile;
+        private string _pathToJson;
 
-        public Generator(string pathToJsonFile)
+        public Generator(string pathToJson)
         {
-            _pathToJsonFile = pathToJsonFile;
+            _pathToJson = pathToJson;
         }
     }
 }
