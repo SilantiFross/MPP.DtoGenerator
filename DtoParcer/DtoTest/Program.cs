@@ -3,11 +3,14 @@ using DtoParcer;
 
 namespace DtoTest
 {
-    class Program
+    internal class Program
     {
         static void Main(string[] args)
         {
-            var generator = new Generator("\\descriptions.json", ".\\");
+            var pathToJson = args[0];
+            var pathToCsFiles = args[1];
+            var generator = new Generator(pathToJson, pathToCsFiles);
+
             generator.GenerateClasses();
             Console.ReadLine();
         }
