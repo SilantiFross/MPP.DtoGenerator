@@ -1,20 +1,40 @@
-﻿{
+{
   "classDescriptions": [
     {
-      "className": "SomethingWicked",
+      "className": "BMW",
       "properties": [
         {
-          "name": "FirstProperty",
+          "name": "MaxSpeed",
           "type": "integer",
           "format": "int32"
         },
         {
-          "name": "SecondProperty",
+          "name": "Torque",
           "type": "integer",
           "format": "int64"
         },
         {
-          "name": "ThirdProperty",
+          "name": "fuelConsumption",
+          "type": "number",
+          "format": "float"
+        }
+      ]
+    },
+    {
+      "className": "Mercedes",
+      "properties": [
+        {
+          "name": "MaxSpeed",
+          "type": "integer",
+          "format": "int32"
+        },
+        {
+          "name": "Torque",
+          "type": "integer",
+          "format": "int64"
+        },
+        {
+          "name": "fuelConsumption",
           "type": "number",
           "format": "float"
         }
