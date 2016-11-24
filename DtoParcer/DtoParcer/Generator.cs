@@ -18,18 +18,6 @@ namespace DtoParcer
         public void GenerateClasses()
         {
             _collectionOfClasses = JsonConvert.DeserializeObject<CollectionOfClasses>(File.ReadAllText(_routerGeneration.PathToJson));
-
-            foreach (var classDescription in _collectionOfClasses.ClassDescriptions)
-            {
-                Console.WriteLine(classDescription.ClassName);
-                foreach (var property in classDescription.Properties)
-                {
-                    Console.WriteLine(property.Format);
-                    Console.WriteLine(property.Type);
-                    Console.WriteLine(property.Name);
-                }
-                Console.WriteLine();
-            }
         }
     }
 }

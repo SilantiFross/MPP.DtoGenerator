@@ -1,9 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using DtoParcer.Parcer.Table;
 
 namespace DtoParcer.Parcer
 {
     internal class Parcer
     {
-        //private Dictionary<>
-    }
+        public Parcer()
+        {
+            var tableTypes = new TableTypes();
+        }
+    }   
 }

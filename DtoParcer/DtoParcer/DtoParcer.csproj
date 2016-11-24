@@ -48,8 +48,9 @@
     <Compile Include="GenerationUnits\Components\Class.cs" />
     <Compile Include="GenerationUnits\CollectionOfClasses.cs" />
     <Compile Include="Generator.cs" />
-    <Compile Include="Parcer\IFormat.cs" />
     <Compile Include="Parcer\Parcer.cs" />
+    <Compile Include="Parcer\Table\JsonType.cs" />
+    <Compile Include="Parcer\Table\TableTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GenerationUnits\Components\Property.cs" />
     <Compile Include="RouterGeneration.cs" />
