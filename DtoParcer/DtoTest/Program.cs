@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using DtoParcer;
 
 namespace DtoTest
@@ -9,6 +10,8 @@ namespace DtoTest
         {
             var pathToJson = args[0];
             var pathToCsFiles = args[1];
+            var numberOfMaxTasks = int.Parse(ConfigurationManager.AppSettings["numberOfTasks"]);
+            var namespaceClasses = ConfigurationManager.AppSettings["namespace"];
             var generator = new Generator(pathToJson, pathToCsFiles);
 
             generator.GenerateClasses();

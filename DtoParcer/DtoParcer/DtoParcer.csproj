@@ -116,6 +116,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigApp.cs" />
     <Compile Include="GenerationUnits\Components\Class.cs" />
     <Compile Include="GenerationUnits\CollectionOfClasses.cs" />
     <Compile Include="Generator.cs" />
