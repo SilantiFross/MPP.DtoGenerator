@@ -12,7 +12,7 @@ namespace DtoTest
             var pathToCsFiles = args[1];
             var numberOfMaxTasks = int.Parse(ConfigurationManager.AppSettings["numberOfTasks"]);
             var namespaceClasses = ConfigurationManager.AppSettings["namespace"];
-            var generator = new Generator(pathToJson, pathToCsFiles);
+            var generator = new Generator(pathToJson, pathToCsFiles, numberOfMaxTasks, namespaceClasses);
 
             generator.GenerateClasses();
             Console.ReadLine();
