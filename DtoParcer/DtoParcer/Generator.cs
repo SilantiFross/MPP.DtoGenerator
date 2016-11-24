@@ -7,7 +7,6 @@ using DtoParcer.Parcer.Table;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Formatting;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Formatting;
 using Newtonsoft.Json;
 
@@ -32,7 +31,10 @@ namespace DtoParcer
             _collectionOfClasses =
                 JsonConvert.DeserializeObject<CollectionOfClasses>(File.ReadAllText(_routerGeneration.PathToJson));
 
-            ParceCsFile(_collectionOfClasses.ClassDescriptions[0]);
+            foreach (var classDescription in _collectionOfClasses.ClassDescriptions)
+            {
+                ParceCsFile(classDescription);
+            }
         }
 
         private void ParceCsFile(Class classDescription)
@@ -72,6 +74,7 @@ namespace DtoParcer
                         SyntaxFactory.Token(SyntaxKind.OpenBraceToken))
                     .WithCloseBraceToken(
                         SyntaxFactory.Token(SyntaxKind.CloseBraceToken)));
+
                 classDeclaration = classDeclaration.AddMembers(propertyDeclaration);
             }
 
@@ -91,7 +94,9 @@ namespace DtoParcer
                 formattedNode.WriteTo(writer);
             }
 
-            Console.WriteLine(stringBuilder);
+            var file = new StreamWriter(_routerGeneration.PathToGeneratedClasses + classDescription.ClassName + ".cs");
+            file.WriteLine(stringBuilder.ToString());
+            file.Close();
         }
     }
 }
