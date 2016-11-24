@@ -1,6 +1,6 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Text;
+using System.Threading;
 using DtoParcer.GenerationUnits;
 using DtoParcer.GenerationUnits.Components;
 using DtoParcer.Parcer.Table;
@@ -31,9 +31,11 @@ namespace DtoParcer
             _collectionOfClasses =
                 JsonConvert.DeserializeObject<CollectionOfClasses>(File.ReadAllText(_routerGeneration.PathToJson));
 
+            ThreadPool.SetMaxThreads(_configApp.NumberOfMaxTasks, _configApp.NumberOfMaxTasks);
+
             foreach (var classDescription in _collectionOfClasses.ClassDescriptions)
             {
-                ParceCsFile(classDescription);
+                ThreadPool.QueueUserWorkItem(state => ParceCsFile(classDescription));
             }
         }
 

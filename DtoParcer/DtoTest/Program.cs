@@ -15,6 +15,8 @@ namespace DtoTest
             var generator = new Generator(pathToJson, pathToCsFiles, numberOfMaxTasks, namespaceClasses);
 
             generator.GenerateClasses();
+
+            Console.WriteLine("It's ok");
             Console.ReadLine();
         }
     }
