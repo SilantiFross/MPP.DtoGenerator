@@ -1,10 +1,14 @@
 ﻿using System;
+using System.IO;
+using DtoParcer.GenerationUnits;
+using Newtonsoft.Json;
 
 namespace DtoParcer
 {
-    internal class Generator
+    public class Generator
     {
-        private RouterGeneration _routerGeneration;
+        private readonly RouterGeneration _routerGeneration;
+        private CollectionOfClasses _collectionOfClasses;
 
         public Generator(string pathToJson, string pathToGeneratedClasses)
         {
@@ -13,7 +17,19 @@ namespace DtoParcer
 
         public void GenerateClasses()
         {
-            throw new NotImplementedException();
+            _collectionOfClasses = JsonConvert.DeserializeObject<CollectionOfClasses>(File.ReadAllText(_routerGeneration.PathToJson));
+
+            foreach (var classDescription in _collectionOfClasses.ClassDescriptions)
+            {
+                Console.WriteLine(classDescription.ClassName);
+                foreach (var property in classDescription.Properties)
+                {
+                    Console.WriteLine(property.Format);
+                    Console.WriteLine(property.Type);
+                    Console.WriteLine(property.Name);
+                }
+                Console.WriteLine();
+            }
         }
     }
 }

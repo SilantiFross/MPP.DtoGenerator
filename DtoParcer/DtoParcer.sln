@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DtoParcer", "DtoParcer\DtoParcer.csproj", "{BB3F3E48-A808-484F-AC60-677396B7F9E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DtoParcerTest", "JsonParcer\DtoParcerTest.csproj", "{69193276-8659-4FC4-B5B0-E24ADE661349}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DtoTest", "DtoTest\DtoTest.csproj", "{035B7F18-4731-4EF3-BC14-665AB62E69C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{BB3F3E48-A808-484F-AC60-677396B7F9E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB3F3E48-A808-484F-AC60-677396B7F9E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB3F3E48-A808-484F-AC60-677396B7F9E1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{69193276-8659-4FC4-B5B0-E24ADE661349}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{69193276-8659-4FC4-B5B0-E24ADE661349}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{69193276-8659-4FC4-B5B0-E24ADE661349}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{69193276-8659-4FC4-B5B0-E24ADE661349}.Release|Any CPU.Build.0 = Release|Any CPU
+		{035B7F18-4731-4EF3-BC14-665AB62E69C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{035B7F18-4731-4EF3-BC14-665AB62E69C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{035B7F18-4731-4EF3-BC14-665AB62E69C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{035B7F18-4731-4EF3-BC14-665AB62E69C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

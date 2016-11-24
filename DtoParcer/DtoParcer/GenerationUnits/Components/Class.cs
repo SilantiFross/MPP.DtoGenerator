@@ -1,8 +1,10 @@
-﻿namespace DtoParcer.GenerationUnits.Components
+﻿using System.Collections.Generic;
+
+namespace DtoParcer.GenerationUnits.Components
 {
     internal class Class
     {
-        public string Name { get; set; }
-        public Property[] Properties { get; set; }
+        public string ClassName { get; set; }
+        public List<Property> Properties { get; set; }
     }
 }
