@@ -1,6 +1,8 @@
-﻿using System;
-using System.Configuration;
+﻿using System.Configuration;
+using System.IO;
 using DtoParcer;
+using DtoParcer.GenerationUnits;
+using Newtonsoft.Json;
 
 namespace DtoTest
 {
@@ -8,38 +10,18 @@ namespace DtoTest
     {
         static void Main(string[] args)
         {
-            var pathToJson = args[0];
-            var pathToCsFiles = args[1];
-            int numberOfMaxTasks;
+            var routerGenerator = new RouterGenerator(args[0], args[1]);
             var namespaceClasses = ConfigurationManager.AppSettings["namespace"];
+            var numberOfMaxTasks = int.Parse(ConfigurationManager.AppSettings["numberOfTasks"]);
 
-            if (IsNumber(out numberOfMaxTasks))
-            {
-                var generator = new Generator(pathToJson, pathToCsFiles, numberOfMaxTasks, namespaceClasses);
-                generator.GenerateClasses();
-                WriteItsOkInConsole();
-            }
-            else
-            {
-                WriteConfigErrorInConsole();
-            }
-        }
+            var collectionOfClasses =
+                JsonConvert.DeserializeObject<CollectionOfClasses>(File.ReadAllText(routerGenerator.PathToJson));
 
-        private static void WriteItsOkInConsole()
-        {
-            Console.WriteLine("It's ok");
-            Console.ReadLine();
-        }
+            var generator = new Generator(numberOfMaxTasks, namespaceClasses);
+            var csClasses = generator.GenerateClasses(collectionOfClasses);
 
-        private static void WriteConfigErrorInConsole()
-        {
-            Console.WriteLine("Check app.config. key='numberOfTasks' is not a number");
-            Console.ReadLine();
-        }
-
-        private static bool IsNumber(out int numberOfMaxTasks)
-        {
-            return int.TryParse(ConfigurationManager.AppSettings["numberOfTasks"], out numberOfMaxTasks);
+            var writer = new Writer();
+            writer.WriteClassesInCsFile(csClasses, routerGenerator.PathToGeneratedClasses);
         }
     }
 }

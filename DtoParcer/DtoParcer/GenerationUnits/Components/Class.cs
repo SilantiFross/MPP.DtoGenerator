@@ -2,7 +2,7 @@
 
 namespace DtoParcer.GenerationUnits.Components
 {
-    internal class Class
+    public class Class
     {
         public string ClassName { get; set; }
         public List<Property> Properties { get; set; }

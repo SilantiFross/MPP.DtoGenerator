@@ -1,11 +1,11 @@
-﻿namespace DtoParcer
+﻿namespace DtoTest
 {
-    internal class RouterGeneration
+    internal class RouterGenerator
     {
         public string PathToJson { get; }
         public string PathToGeneratedClasses { get; }
 
-        public RouterGeneration(string pathToJson, string pathToGeneratedClasses)
+        public RouterGenerator(string pathToJson, string pathToGeneratedClasses)
         {
             PathToJson = pathToJson;
             PathToGeneratedClasses = pathToGeneratedClasses;

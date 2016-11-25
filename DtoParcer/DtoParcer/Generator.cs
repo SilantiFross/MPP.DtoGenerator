@@ -1,6 +1,7 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text;
-using System.Threading;
 using DtoParcer.GenerationUnits;
 using DtoParcer.GenerationUnits.Components;
 using DtoParcer.Parcer.Table;
@@ -9,46 +10,39 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Formatting;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Formatting;
-using Newtonsoft.Json;
 
 namespace DtoParcer
 {
     public class Generator
     {
-        private readonly RouterGeneration _routerGeneration;
         private readonly ConfigApp _configApp;
         private readonly TableTypes _tableTypes;
-        private CollectionOfClasses _collectionOfClasses;
 
-        public Generator(string pathToJson, string pathToGeneratedClasses, int numberOfMaxTasks, string namespaceClasses)
+        public Generator(int numberOfMaxTasks, string namespaceClasses)
         {
-            _routerGeneration = new RouterGeneration(pathToJson, pathToGeneratedClasses);
             _configApp = new ConfigApp(numberOfMaxTasks, namespaceClasses);
             _tableTypes = new TableTypes();
         }
 
-        public void GenerateClasses()
-        {
-            _collectionOfClasses =
-                JsonConvert.DeserializeObject<CollectionOfClasses>(File.ReadAllText(_routerGeneration.PathToJson));
+        public List<StringBuilder> GenerateClasses(CollectionOfClasses collectionOfClasses)
+        { 
+            //ThreadPool.SetMaxThreads(_configApp.NumberOfMaxTasks, _configApp.NumberOfMaxTasks);
+            var generatedCsClasses = new List<StringBuilder>();
 
-            ThreadPool.SetMaxThreads(_configApp.NumberOfMaxTasks, _configApp.NumberOfMaxTasks);
-
-            foreach (var classDescription in _collectionOfClasses.ClassDescriptions)
+            foreach (var classDescription in collectionOfClasses.ClassDescriptions)
             {
-                ThreadPool.QueueUserWorkItem(state => ParceCsFile(classDescription));
+                generatedCsClasses.Add(ParceCsFile(classDescription));
             }
+
+            return generatedCsClasses;
         }
 
-        private void ParceCsFile(Class classDescription)
+        private StringBuilder ParceCsFile(Class classDescription)
         {
             var namespaceDeclaration = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.IdentifierName(_configApp.NamespaceClasses));
             var classDeclaration = AddedClassDeclaration(classDescription);
 
-            foreach (var property in classDescription.Properties)
-            {
-                classDeclaration = AddedAutoProperty(property, classDeclaration);
-            }
+            classDeclaration = classDescription.Properties.Aggregate(classDeclaration, (current, property) => AddedAutoProperty(property, current));
 
             namespaceDeclaration = namespaceDeclaration.AddMembers(classDeclaration);
             var compilationUnit = SyntaxFactory.CompilationUnit();
@@ -62,7 +56,7 @@ namespace DtoParcer
                 formattedNode.WriteTo(writer);
             }
 
-            WriteInFile(classDescription, stringBuilder);
+            return stringBuilder;
         }
 
         private ClassDeclarationSyntax AddedAutoProperty(Property property, ClassDeclarationSyntax classDeclaration)
@@ -119,13 +113,5 @@ namespace DtoParcer
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.SealedKeyword));
             return classDeclaration;
         }
-
-        private void WriteInFile(Class classDescription, StringBuilder stringBuilder)
-        {
-            var file = new StreamWriter(_routerGeneration.PathToGeneratedClasses + classDescription.ClassName + ".cs");
-            file.WriteLine(stringBuilder.ToString());
-            file.Close();
-        }
-
     }
 }
