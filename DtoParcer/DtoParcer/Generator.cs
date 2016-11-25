@@ -7,6 +7,7 @@ using DtoParcer.Parcer.Table;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Formatting;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Formatting;
 using Newtonsoft.Json;
 
@@ -42,53 +43,18 @@ namespace DtoParcer
         private void ParceCsFile(Class classDescription)
         {
             var namespaceDeclaration = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.IdentifierName(_configApp.NamespaceClasses));
-
-            var classDeclaration = SyntaxFactory.ClassDeclaration(classDescription.ClassName)
-                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
-                .AddModifiers(SyntaxFactory.Token(SyntaxKind.SealedKeyword));
+            var classDeclaration = AddedClassDeclaration(classDescription);
 
             foreach (var property in classDescription.Properties)
             {
-                var jsonType = new JsonType(property.Type, property.Format);
-                var propertyDeclaration =
-                    SyntaxFactory.PropertyDeclaration(SyntaxFactory.ParseTypeName(_tableTypes.GetNetType(jsonType)), property.Name)
-                        .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
-                        .WithModifiers(
-                    SyntaxFactory.TokenList(
-                        SyntaxFactory.Token(SyntaxKind.PublicKeyword)))
-                .WithAccessorList(
-                    SyntaxFactory.AccessorList(
-                        SyntaxFactory.List(
-                            new []{
-                                SyntaxFactory.AccessorDeclaration(
-                                    SyntaxKind.GetAccessorDeclaration)
-                                .WithKeyword(
-                                    SyntaxFactory.Token(SyntaxKind.GetKeyword))
-                                .WithSemicolonToken(
-                                    SyntaxFactory.Token(SyntaxKind.SemicolonToken)),
-                                SyntaxFactory.AccessorDeclaration(
-                                    SyntaxKind.SetAccessorDeclaration)
-                                .WithKeyword(
-                                    SyntaxFactory.Token(SyntaxKind.SetKeyword))
-                                .WithSemicolonToken(
-                                    SyntaxFactory.Token(SyntaxKind.SemicolonToken))}))
-                    .WithOpenBraceToken(
-                        SyntaxFactory.Token(SyntaxKind.OpenBraceToken))
-                    .WithCloseBraceToken(
-                        SyntaxFactory.Token(SyntaxKind.CloseBraceToken)));
-
-                classDeclaration = classDeclaration.AddMembers(propertyDeclaration);
+                classDeclaration = AddedAutoProperty(property, classDeclaration);
             }
 
             namespaceDeclaration = namespaceDeclaration.AddMembers(classDeclaration);
             var compilationUnit = SyntaxFactory.CompilationUnit();
             compilationUnit = compilationUnit.AddMembers(namespaceDeclaration);
 
-            var workspace = new AdhocWorkspace();
-            var options = workspace.Options;
-            options = options.WithChangedOption(CSharpFormattingOptions.SpaceBeforeOpenSquareBracket, false);
-
-            var formattedNode = Formatter.Format(compilationUnit, workspace, options);
+            var formattedNode = AddedFormattedNode(compilationUnit);
             var stringBuilder = new StringBuilder();
 
             using (var writer = new StringWriter(stringBuilder))
@@ -96,9 +62,70 @@ namespace DtoParcer
                 formattedNode.WriteTo(writer);
             }
 
+            WriteInFile(classDescription, stringBuilder);
+        }
+
+        private ClassDeclarationSyntax AddedAutoProperty(Property property, ClassDeclarationSyntax classDeclaration)
+        {
+            var jsonType = new JsonType(property.Type, property.Format);
+
+            var propertyDeclaration =
+                SyntaxFactory.PropertyDeclaration(SyntaxFactory.ParseTypeName(_tableTypes.GetNetType(jsonType)), property.Name)
+                    .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
+                    .WithModifiers(
+                        SyntaxFactory.TokenList(
+                            SyntaxFactory.Token(SyntaxKind.PublicKeyword)))
+                    .WithAccessorList(
+                        SyntaxFactory.AccessorList(
+                                SyntaxFactory.List(
+                                    new[]
+                                    {
+                                        SyntaxFactory.AccessorDeclaration(
+                                                SyntaxKind.GetAccessorDeclaration)
+                                            .WithKeyword(
+                                                SyntaxFactory.Token(SyntaxKind.GetKeyword))
+                                            .WithSemicolonToken(
+                                                SyntaxFactory.Token(SyntaxKind.SemicolonToken)),
+                                        SyntaxFactory.AccessorDeclaration(
+                                                SyntaxKind.SetAccessorDeclaration)
+                                            .WithKeyword(
+                                                SyntaxFactory.Token(SyntaxKind.SetKeyword))
+                                            .WithSemicolonToken(
+                                                SyntaxFactory.Token(SyntaxKind.SemicolonToken))
+                                    }))
+                            .WithOpenBraceToken(
+                                SyntaxFactory.Token(SyntaxKind.OpenBraceToken))
+                            .WithCloseBraceToken(
+                                SyntaxFactory.Token(SyntaxKind.CloseBraceToken)));
+
+            classDeclaration = classDeclaration.AddMembers(propertyDeclaration);
+            return classDeclaration;
+        }
+
+        private SyntaxNode AddedFormattedNode(SyntaxNode compilationUnit)
+        {
+            var workspace = new AdhocWorkspace();
+            var options = workspace.Options;
+            options = options.WithChangedOption(CSharpFormattingOptions.SpaceBeforeOpenSquareBracket, false);
+
+            var formattedNode = Formatter.Format(compilationUnit, workspace, options);
+            return formattedNode;
+        }
+
+        private ClassDeclarationSyntax AddedClassDeclaration(Class classDescription)
+        {
+            var classDeclaration = SyntaxFactory.ClassDeclaration(classDescription.ClassName)
+                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
+                .AddModifiers(SyntaxFactory.Token(SyntaxKind.SealedKeyword));
+            return classDeclaration;
+        }
+
+        private void WriteInFile(Class classDescription, StringBuilder stringBuilder)
+        {
             var file = new StreamWriter(_routerGeneration.PathToGeneratedClasses + classDescription.ClassName + ".cs");
             file.WriteLine(stringBuilder.ToString());
             file.Close();
         }
+
     }
 }
