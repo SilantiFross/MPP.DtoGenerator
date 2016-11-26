@@ -120,8 +120,8 @@
     <Compile Include="GenerationUnits\Components\Class.cs" />
     <Compile Include="GenerationUnits\CollectionOfClasses.cs" />
     <Compile Include="Generator.cs" />
-    <Compile Include="Parcer\Table\JsonType.cs" />
     <Compile Include="Parcer\Table\TableTypes.cs" />
+    <Compile Include="Parcer\Table\ParcerType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GenerationUnits\Components\Property.cs" />
   </ItemGroup>

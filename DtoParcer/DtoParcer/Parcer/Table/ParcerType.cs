@@ -2,16 +2,16 @@
 
 namespace DtoParcer.Parcer.Table
 {
-    internal class JsonType: IEquatable<JsonType>
+    public class ParcerType: IEquatable<ParcerType>
     {
-        private readonly string _type;
-        private readonly string _format;
+        public string Type;
+        public string Format;
         private int _hashCode;
 
-        public JsonType(string type, string format)
+        public ParcerType(string type, string format)
         {
-            _type = type;
-            _format = format;
+            Type = type;
+            Format = format;
         }
 
         public override int GetHashCode()
@@ -21,8 +21,8 @@ namespace DtoParcer.Parcer.Table
                 var result = _hashCode;
                 if (result != 0) return result;
                 result = 17;
-                result = 31 * result + _type.GetHashCode();
-                result = 31 * result + _format.GetHashCode();
+                result = 31 * result + Type.GetHashCode();
+                result = 31 * result + Format.GetHashCode();
                 _hashCode = result;
                 return result;
             }
@@ -32,13 +32,13 @@ namespace DtoParcer.Parcer.Table
         {
             if (ReferenceEquals(obj, null)) return false;
             if (ReferenceEquals(obj, this)) return true;
-            return obj.GetType() == GetType() && Equals(obj as JsonType);
+            return obj.GetType() == GetType() && Equals(obj as ParcerType);
         }
 
-        public bool Equals(JsonType other)
+        public bool Equals(ParcerType other)
         {
             if (other == null) return false;
-            return string.Equals(_type, other._type) && string.Equals(_format, other._format);
+            return string.Equals(Type, other.Type) && string.Equals(Format, other.Format);
         }
     }
 }

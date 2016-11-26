@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Text;
+using System.Collections.Generic;
 using DtoParcer.GenerationUnits;
 using DtoParcer.GenerationUnits.Components;
 using DtoParcer.Parcer.Table;
@@ -61,10 +61,10 @@ namespace DtoParcer
 
         private ClassDeclarationSyntax AddedAutoProperty(Property property, ClassDeclarationSyntax classDeclaration)
         {
-            var jsonType = new JsonType(property.Type, property.Format);
+            var parcerType = new ParcerType(property.Type, property.Format);
 
             var propertyDeclaration =
-                SyntaxFactory.PropertyDeclaration(SyntaxFactory.ParseTypeName(_tableTypes.GetNetType(jsonType)), property.Name)
+                SyntaxFactory.PropertyDeclaration(SyntaxFactory.ParseTypeName(_tableTypes.GetNetType(parcerType)), property.Name)
                     .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
                     .WithModifiers(
                         SyntaxFactory.TokenList(

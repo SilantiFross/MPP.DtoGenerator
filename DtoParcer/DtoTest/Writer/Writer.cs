@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace DtoTest
+namespace DtoTest.Writer
 {
     internal class Writer
     {
@@ -13,7 +13,7 @@ namespace DtoTest
             {
                 var className = Regex.Match(stringBuilder.ToString(), @"(?<=class )(\w+)");
                 var file = new StreamWriter(pathToGeneratedClasses + className + ".cs");
-                file.WriteLine(stringBuilder.ToString());
+                file.WriteLine(stringBuilder);
                 file.Close();
             }
         }

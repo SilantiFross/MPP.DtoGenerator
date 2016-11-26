@@ -4,27 +4,27 @@ namespace DtoParcer.Parcer.Table
 {
     internal class TableTypes
     {
-        private readonly Dictionary<JsonType, string> _types;
+        private readonly Dictionary<ParcerType, string> _types;
 
         public TableTypes()
         {
-            _types = new Dictionary<JsonType, string>
+            _types = new Dictionary<ParcerType, string>
             {
-                { new JsonType("integer", "int32"), "int" },
-                { new JsonType("integer", "int64"), "long" },
-                { new JsonType("number", "float"), "float" },
-                { new JsonType("number", "double"), "double" },
-                { new JsonType("string", "byte"), "byte" },
-                { new JsonType("boolean", ""),  "bool"},
-                { new JsonType("string", "date"), "DateTime" },
-                { new JsonType("string", "string"),  "string"}
+                { new ParcerType("integer", "int32"), "int" },
+                { new ParcerType("integer", "int64"), "long" },
+                { new ParcerType("number", "float"), "float" },
+                { new ParcerType("number", "double"), "double" },
+                { new ParcerType("string", "byte"), "byte" },
+                { new ParcerType("boolean", ""),  "bool"},
+                { new ParcerType("string", "date"), "DateTime" },
+                { new ParcerType("string", "string"),  "string"}
             };
         }
 
-        public string GetNetType(JsonType jsonType)
+        public string GetNetType(ParcerType type)
         {
             string netType;
-            return _types.TryGetValue(jsonType, out netType) ? netType : string.Empty;
+            return _types.TryGetValue(type, out netType) ? netType : "undefined";
         }
     }
 }
