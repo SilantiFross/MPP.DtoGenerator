@@ -1,7 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.Collections.Generic;
+using System.Threading;
+using System.Collections.Concurrent;
 using DtoParcer.GenerationUnits;
 using DtoParcer.GenerationUnits.Components;
 using DtoParcer.Parcer.Table;
@@ -17,6 +19,7 @@ namespace DtoParcer
     {
         private readonly ConfigApp _configApp;
         private readonly TableTypes _tableTypes;
+        private ConcurrentQueue<StringBuilder> _generatedCsClasses;
 
         public Generator(int numberOfMaxTasks, string namespaceClasses)
         {
@@ -24,17 +27,20 @@ namespace DtoParcer
             _tableTypes = new TableTypes();
         }
 
-        public List<StringBuilder> GenerateClasses(CollectionOfClasses collectionOfClasses)
-        { 
-            //ThreadPool.SetMaxThreads(_configApp.NumberOfMaxTasks, _configApp.NumberOfMaxTasks);
-            var generatedCsClasses = new List<StringBuilder>();
+        public ConcurrentQueue<StringBuilder> GenerateClasses(CollectionOfClasses collectionOfClasses)
+        {
+            _generatedCsClasses = new ConcurrentQueue<StringBuilder>();
+            var administratorTasks = new AdministratorTasks(_configApp.NumberOfMaxTasks);
 
-            foreach (var classDescription in collectionOfClasses.ClassDescriptions)
+            using (var countdownEvent = new CountdownEvent(collectionOfClasses.ClassDescriptions.Count))
             {
-                generatedCsClasses.Add(ParceCsFile(classDescription));
+                foreach (var classDescription in collectionOfClasses.ClassDescriptions)
+                {
+                    administratorTasks.GenerateCsClass(_generatedCsClasses, classDescription, countdownEvent, ParceCsFile);
+                }
+                administratorTasks.WaitAllTasks(countdownEvent);
             }
-
-            return generatedCsClasses;
+            return _generatedCsClasses;
         }
 
         private StringBuilder ParceCsFile(Class classDescription)

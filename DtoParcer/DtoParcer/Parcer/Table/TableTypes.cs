@@ -15,9 +15,9 @@ namespace DtoParcer.Parcer.Table
                 { new ParcerType("number", "float"), "float" },
                 { new ParcerType("number", "double"), "double" },
                 { new ParcerType("string", "byte"), "byte" },
-                { new ParcerType("boolean", ""),  "bool"},
+                { new ParcerType("boolean", ""),  "bool" },
                 { new ParcerType("string", "date"), "DateTime" },
-                { new ParcerType("string", "string"),  "string"}
+                { new ParcerType("string", "string"),  "string" }
             };
         }
 
