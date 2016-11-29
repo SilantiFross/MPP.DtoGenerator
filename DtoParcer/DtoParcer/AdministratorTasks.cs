@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
 using DtoParcer.GenerationUnits.Components;
 
 namespace DtoParcer
@@ -26,10 +26,17 @@ namespace DtoParcer
 
         public void GenerateCsClass(ConcurrentQueue<StringBuilder> generatedCsClasses, Class adddedClass, CountdownEvent countdownEvent, Func<Class, StringBuilder> parceFunc)
         {
-            if (CanAddToPool)
-                AddToPool(generatedCsClasses, adddedClass, countdownEvent, parceFunc);
-            else
-                _taskQueue.Enqueue(adddedClass);
+            lock (_syncRoot)
+            {
+                if (CanAddToPool)
+                {
+                    AddToPool(generatedCsClasses, adddedClass, countdownEvent, parceFunc);
+                }
+                else
+                {
+                    _taskQueue.Enqueue(adddedClass);
+                }
+            }
         }
 
         public void WaitAllTasks(CountdownEvent countdownEvent)
@@ -42,18 +49,22 @@ namespace DtoParcer
             ThreadPool.QueueUserWorkItem(delegate
             {
                 generatedCsClasses.Enqueue(parceFunc(addedClass));
-                OnTaskFinish(generatedCsClasses, addedClass, countdownEvent, parceFunc);
+                OnTaskFinish(generatedCsClasses, countdownEvent, parceFunc);
             });
+            _runningTasksCount++;
         }
 
-        private void OnTaskFinish(ConcurrentQueue<StringBuilder> generatedCsClasses, Class adddedClass, CountdownEvent countdownEvent, Func<Class, StringBuilder> parceFunc)
+        private void OnTaskFinish(ConcurrentQueue<StringBuilder> generatedCsClasses, CountdownEvent countdownEvent, Func<Class, StringBuilder> parceFunc)
         {
             lock (_syncRoot)
             {
                 _runningTasksCount--;
 
                 if (HasTasks)
+                {
+                    var adddedClass = _taskQueue.Dequeue();
                     AddToPool(generatedCsClasses, adddedClass, countdownEvent, parceFunc);
+                }
             }
             countdownEvent.Signal();
         }

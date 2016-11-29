@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Configuration;
 using System.IO;
 using System.Text;
+using System.Configuration;
+using System.Collections.Concurrent;
 using DtoParcer;
 using DtoParcer.GenerationUnits;
 using Newtonsoft.Json;
